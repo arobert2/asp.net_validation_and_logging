@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Library.API.Controllers
 {
+    [Route("api/authors/{authorId}/books")]
     public class BooksController : Controller
     {
         private readonly ILibraryRepository _LibraryRepository;
@@ -18,7 +19,7 @@ namespace Library.API.Controllers
             _LibraryRepository = libraryRepository;
         }
 
-        [HttpGet("api/authors/{authorId}/books")]
+        [HttpGet()]
         public IActionResult GetBooksForAuthor(Guid authorId)
         {
             if (!_LibraryRepository.AuthorExists(authorId))
@@ -28,17 +29,26 @@ namespace Library.API.Controllers
             return Ok(books);
         }
 
-        [HttpGet("api/authors/{authorId}/books/{bookId}")]
-        public IActionResult GetBookForAuthor(Guid authorId, Guid bookId)
+        [HttpGet("{Id}")]
+        public IActionResult GetBookForAuthor(Guid authorId, Guid Id)
         {
             if(!_LibraryRepository.AuthorExists(authorId))
                 return NotFound();
 
-            var bookForAuthorFromRepo = _LibraryRepository.GetBookForAuthor(authorId, bookId);
+            var bookForAuthorFromRepo = _LibraryRepository.GetBookForAuthor(authorId, Id);
             if (bookForAuthorFromRepo == null)
                 return NotFound();
             var book = Mapper.Map<BookDto>(bookForAuthorFromRepo);
             return Ok(book);
+        }
+
+        [HttpPost()]
+        public IActionResult CreateBookForAuthor(Guid authorId, [FromBody] BookForCreationDto book)
+        {
+            if (book == null)
+                return BadRequest();
+
+            if(_LibraryRepository.AuthorExists(authorId))
         }
     }
 }
