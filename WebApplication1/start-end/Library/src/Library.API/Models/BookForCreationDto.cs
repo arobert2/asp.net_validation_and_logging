@@ -7,8 +7,7 @@ namespace Library.API.Models
 {
     public class BookForCreationDto
     {
-        string Title { get; set; }
-        string Description { get; set; }
-
+        public string Title { get; set; }
+        public string Description { get; set; }
     }
 }

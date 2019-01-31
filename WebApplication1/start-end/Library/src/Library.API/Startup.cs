@@ -81,6 +81,7 @@ namespace Library.API
 
                 cfg.CreateMap<Book, BookDto>();
                 cfg.CreateMap<AuthorForCreationDto, Author>();
+                cfg.CreateMap<BookForCreationDto, Book>();
             });
 
             app.UseMvc(); 
