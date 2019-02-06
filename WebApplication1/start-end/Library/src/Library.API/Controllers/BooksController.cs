@@ -13,19 +13,19 @@ namespace Library.API.Controllers
     [Route("api/authors/{authorId}/books")]
     public class BooksController : Controller
     {
-        private readonly ILibraryRepository _LibraryRepository;
+        private readonly ILibraryRepository _libraryRepository;
 
         public BooksController(ILibraryRepository libraryRepository)
         {
-            _LibraryRepository = libraryRepository;
+            _libraryRepository = libraryRepository;
         }
 
         [HttpGet()]
         public IActionResult GetBooksForAuthor(Guid authorId)
         {
-            if (!_LibraryRepository.AuthorExists(authorId))
+            if (!_libraryRepository.AuthorExists(authorId))
                 return NotFound();
-            var repoBooks = _LibraryRepository.GetBooksForAuthor(authorId);
+            var repoBooks = _libraryRepository.GetBooksForAuthor(authorId);
             var books = Mapper.Map<IEnumerable<BookDto>>(repoBooks);
             return Ok(books);
         }
@@ -33,10 +33,10 @@ namespace Library.API.Controllers
         [HttpGet("{Id}", Name = "GetBookForAuthor")]
         public IActionResult GetBookForAuthor(Guid authorId, Guid Id)
         {
-            if(!_LibraryRepository.AuthorExists(authorId))
+            if(!_libraryRepository.AuthorExists(authorId))
                 return NotFound();
 
-            var bookForAuthorFromRepo = _LibraryRepository.GetBookForAuthor(authorId, Id);
+            var bookForAuthorFromRepo = _libraryRepository.GetBookForAuthor(authorId, Id);
             if (bookForAuthorFromRepo == null)
                 return NotFound();
             var book = Mapper.Map<BookDto>(bookForAuthorFromRepo);
@@ -49,13 +49,13 @@ namespace Library.API.Controllers
             if (book == null)
                 return BadRequest();
 
-            if (!_LibraryRepository.AuthorExists(authorId))
+            if (!_libraryRepository.AuthorExists(authorId))
                 return NotFound();
 
             var bookEntity = Mapper.Map<Book>(book);
 
-            _LibraryRepository.AddBookForAuthor(authorId, bookEntity);
-            if (!_LibraryRepository.Save())
+            _libraryRepository.AddBookForAuthor(authorId, bookEntity);
+            if (!_libraryRepository.Save())
                 throw new Exception($"Creating a book for author {authorId} failed on save.");
 
             var bookToReturn = Mapper.Map<BookDto>(bookEntity);
